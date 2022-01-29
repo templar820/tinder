@@ -1,128 +1,98 @@
-import {useEffect, useState} from 'react'
-import './App.css'
-import Hammer from "hammerjs"
+import React, { useEffect, useRef, useState } from 'react';
+import './App.scss';
+import Hammer from 'hammerjs';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import {IconButton} from "@mui/material";
+import { IconButton } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
-import ReactImageFallback from "react-image-fallback";
-import BrokenImageIcon from "@mui/icons-material/BrokenImage";
-import CircularProgress from "@mui/material/CircularProgress";
+import ReactImageFallback from 'react-image-fallback';
+import BrokenImageIcon from '@mui/icons-material/BrokenImage';
+import CircularProgress from '@mui/material/CircularProgress';
+import config from './card.config';
 
-const cards = [
-  {
-    name: "Demo card 1",
-    description: "This is a demo for Tinder like swipe cards",
-    img: "https://placeimg.com/600/300/tech"
-  },
-  {
-    name: "Demo card 2",
-    description: "This is a demo for Tinder like swipe cards",
-    img: "https://placeimg.com/600/300/tech"
-  },
-  {
-    name: "Demo card 3",
-    description: "This is a demo for Tinder like swipe cards",
-    img: "https://placeimg.com/600/300/tech"
-  },
-  {
-    name: "Demo card 4",
-    description: "This is a demo for Tinder like swipe cards",
-    img: "https://placeimg.com/600/300/arch"
-  },
-]
-
+let count = 0;
 function App() {
-  const [count, setCount] = useState(0)
-  
-  
-  const [currentCard, setCurrentCard] = useState(cards[0])
-  
+  const [currentCard, setCurrentCard] = useState(config.data[count]);
+  const cardRef = useRef(null);
+  const tinderContainer = useRef(null);
+  const generateNewCard = () => {
+    const card = cardRef.current;
+    card.style.transform = '';
+    setCurrentCard(config.data[(++count) % config.data.length]);
+  };
 
   useEffect(() => {
-    var tinderContainer = document.querySelector('.tinder');
-    var allCards = document.querySelectorAll('.tinder--card');
-    
-  
-    allCards.forEach(function (el) {
-      var hammertime = new Hammer(el);
+    const card = cardRef.current! as HTMLElement;
+    const hammertime = new Hammer(card);
+    hammertime.on('pan', (event) => {
+      card.classList.add('moving');
 
-      hammertime.on('pan', function (event) {
-        el.classList.add('moving');
-      });
+      if (event.deltaX === 0) return;
+      if (event.center.x === 0 && event.center.y === 0) return;
 
-      hammertime.on('pan', function (event) {
-        if (event.deltaX === 0) return;
-        if (event.center.x === 0 && event.center.y === 0) return;
+      tinderContainer.current.classList.toggle('tinder_love', event.deltaX > 0);
+      tinderContainer.current.classList.toggle('tinder_nope', event.deltaX < 0);
 
-        tinderContainer.classList.toggle('tinder_love', event.deltaX > 0);
-        tinderContainer.classList.toggle('tinder_nope', event.deltaX < 0);
+      const xMulti = event.deltaX * 0.03;
+      const yMulti = event.deltaY / 80;
+      const rotate = xMulti * yMulti;
 
-        var xMulti = event.deltaX * 0.03;
-        var yMulti = event.deltaY / 80;
-        var rotate = xMulti * yMulti;
-
-        event.target.style.transform = 'translate(' + event.deltaX + 'px, ' + event.deltaY + 'px) rotate(' + rotate + 'deg)';
-      });
-
-      hammertime.on('panend', function (event) {
-        el.classList.remove('moving');
-        tinderContainer.classList.remove('tinder_love');
-        tinderContainer.classList.remove('tinder_nope');
-
-        var moveOutWidth = document.body.clientWidth;
-        var keep = Math.abs(event.deltaX) < 80 || Math.abs(event.velocityX) < 0.5;
-
-        event.target.classList.toggle('removed', !keep);
-
-        if (keep) {
-          event.target.style.transform = '';
-        } else {
-          const endX = Math.max(Math.abs(event.velocityX) * moveOutWidth, moveOutWidth);
-          var toX = event.deltaX > 0 ? endX : -endX;
-          var endY = Math.abs(event.velocityY) * moveOutWidth;
-          var toY = event.deltaY > 0 ? endY : -endY;
-          var xMulti = event.deltaX * 0.03;
-          var yMulti = event.deltaY / 80;
-          var rotate = xMulti * yMulti;
-
-          event.target.style.transform = 'translate(' + toX + 'px, ' + (toY + event.deltaY) + 'px) rotate(' + rotate + 'deg)';
-        }
-      });
+      event.target.style.transform = 'translate(' + event.deltaX + 'px, ' + event.deltaY + 'px) rotate(' + rotate + 'deg)';
     });
-  }, [])
-  
-  const buttonHandleClick = (card, love) => {
-    var cards = document.querySelectorAll('.tinder--card:not(.removed)');
-    var moveOutWidth = document.body.clientWidth * 1.5;
-  
+  }, []);
+
+  useEffect(() => {
+    const card = cardRef.current! as HTMLElement;
+    const hammertime = new Hammer(card);
+    hammertime.on('panend', (event) => {
+      card.classList.remove('moving');
+      tinderContainer.current.classList.remove('tinder_love');
+      tinderContainer.current.classList.remove('tinder_nope');
+      const moveOutWidth = document.body.clientWidth;
+      const keep = Math.abs(event.deltaX) < 80 || Math.abs(event.velocityX) < 0.5;
+      if (!keep) {
+        const endX = Math.max(Math.abs(event.velocityX) * moveOutWidth, moveOutWidth);
+        const toX = event.deltaX > 0 ? endX : -endX;
+        const endY = Math.abs(event.velocityY) * moveOutWidth;
+        const toY = event.deltaY > 0 ? endY : -endY;
+        const xMulti = event.deltaX * 0.03;
+        const yMulti = event.deltaY / 80;
+        const rotate = xMulti * yMulti;
+        event.target.style.transform = 'translate(' + toX + 'px, ' + (toY + event.deltaY) + 'px) rotate(' + rotate + 'deg)';
+      }
+      generateNewCard();
+    });
+  }, []);
+
+  const buttonHandleClick = (love) => {
+    const card = cardRef.current;
+    const cards = document.querySelectorAll('.tinder--card:not(.removed)');
+    const moveOutWidth = document.body.clientWidth * 1.5;
     if (!cards.length) return false;
-  
-  
     card.classList.add('removed');
-  
     if (love) {
       card.style.transform = 'translate(' + moveOutWidth + 'px, -100px) rotate(-30deg)';
     } else {
       card.style.transform = 'translate(-' + moveOutWidth + 'px, -100px) rotate(30deg)';
     }
-  }
+    generateNewCard();
+  };
 
   return (
     <div className="App">
-      <div className="tinder loaded p-5">
-        {/*<div className="tinder--status">*/}
-        {/*  <i className="fa fa-remove" />*/}
-        {/*  <i className="fa fa-heart" />*/}
-        {/*</div>*/}
+      <div className="tinder loaded p-5" ref={tinderContainer}>
+        <div className="tinder--status">
+          <FavoriteIcon fontSize="large" style={{ color: '#FFACE4' }} />
+          <ClearIcon fontSize="large" style={{ color: '#CDD6DD' }} />
+        </div>
         <div className="tinder--cards d-flex justify-content-center flex-column align-items-center">
-          <div className="tinder--card">
+          <div className="tinder--card" ref={cardRef}>
             <ReactImageFallback
               src={currentCard.img}
-              fallbackImage={<BrokenImageIcon/>}
+              fallbackImage={<BrokenImageIcon />}
               initialImage={
                 (
                   <div className="w-100 h-100 mt-4 d-flex justify-content-center">
-                    <CircularProgress style={{color: "#CDD6DD"}} disableShrink />
+                    <CircularProgress style={{ color: '#CDD6DD' }} disableShrink />
                   </div>
                 )
               }
@@ -133,21 +103,23 @@ function App() {
           </div>
           <div className="mt-4 tinder--buttons d-flex flex-row">
             <IconButton onClick={() => {
-              buttonHandleClick({}, false)
-            }}>
-              <ClearIcon fontSize="large" style={{color: "#CDD6DD"}}/>
+              buttonHandleClick(false);
+            }}
+            >
+              <ClearIcon fontSize="large" style={{ color: '#CDD6DD' }} />
             </IconButton>
             <IconButton onClick={() => {
-              buttonHandleClick({}, true)
-            }}>
-              <FavoriteIcon fontSize="large" style={{color: "#FFACE4"}}/>
+              buttonHandleClick(true);
+            }}
+            >
+              <FavoriteIcon fontSize="large" style={{ color: '#FFACE4' }} />
             </IconButton>
           </div>
         </div>
-        </div>
-       
+      </div>
+
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

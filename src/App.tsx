@@ -90,7 +90,7 @@ function App() {
   }, []);
 
   const buttonHandleClick = (love) => {
-    const card = cardRef.current;
+    const card = cardRef.current! as HTMLElement;
     const moveOutWidth = document.body.clientWidth * 1.5;
     if (love) {
       card.style.transform = 'translate(' + moveOutWidth + 'px, -100px) rotate(-30deg)';

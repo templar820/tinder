@@ -13,8 +13,11 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "skipDefaultLibCheck": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "checkJs": false,
+    "jsx": "react-jsx",
+
   },
   "include": ["./src"]
 }

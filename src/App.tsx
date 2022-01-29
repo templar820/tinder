@@ -12,8 +12,25 @@ import config from './card.config';
 let count = 0;
 function App() {
   const [currentCard, setCurrentCard] = useState(config.data[count]);
+  const [text, setText] = useState('');
   const cardRef = useRef(null);
   const tinderContainer = useRef(null);
+
+  useEffect(() => {
+    const endpoint = 'https://baconipsum.com/api/?type=all-meat&paras=1&start-with-lorem=1';
+
+    fetch(endpoint)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setText(data[0]);
+      })
+      .catch((error) => {
+        console.log('There was a problem with the fetch operation:' + error.message);
+      });
+  }, [count]);
+
   const generateNewCard = () => {
     const card = cardRef.current;
     card.style.opacity = 0;
@@ -58,7 +75,6 @@ function App() {
       const moveOutWidth = document.body.clientWidth;
       const keep = Math.abs(event.deltaX) < 80 || Math.abs(event.velocityX) < 0.5;
       if (!keep) {
-        console.log(true);
         const endX = Math.max(Math.abs(event.velocityX) * moveOutWidth, moveOutWidth);
         const toX = event.deltaX > 0 ? endX : -endX;
         const endY = Math.abs(event.velocityY) * moveOutWidth;
@@ -74,10 +90,7 @@ function App() {
 
   const buttonHandleClick = (love) => {
     const card = cardRef.current;
-    const cards = document.querySelectorAll('.tinder--card:not(.removed)');
     const moveOutWidth = document.body.clientWidth * 1.5;
-    if (!cards.length) return false;
-    card.classList.add('removed');
     if (love) {
       card.style.transform = 'translate(' + moveOutWidth + 'px, -100px) rotate(-30deg)';
     } else {
@@ -108,7 +121,7 @@ function App() {
               className="d-flex justify-content-center"
             />
             <h3>{currentCard.name}</h3>
-            <p>{currentCard.description}</p>
+            <p>{text}</p>
           </div>
           <div className="mt-4 tinder--buttons d-flex flex-row">
             <IconButton onClick={() => {

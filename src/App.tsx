@@ -16,8 +16,16 @@ function App() {
   const tinderContainer = useRef(null);
   const generateNewCard = () => {
     const card = cardRef.current;
-    card.style.transform = '';
-    setCurrentCard(config.data[(++count) % config.data.length]);
+    card.style.opacity = 0;
+    setTimeout(() => {
+      card.style.transform = '';
+    }, 200);
+    setTimeout(() => {
+      card.style.opacity = 1;
+      card.style.transform = 'scale(1)';
+
+      setCurrentCard(config.data[(++count) % config.data.length]);
+    }, 500);
   };
 
   useEffect(() => {
@@ -50,6 +58,7 @@ function App() {
       const moveOutWidth = document.body.clientWidth;
       const keep = Math.abs(event.deltaX) < 80 || Math.abs(event.velocityX) < 0.5;
       if (!keep) {
+        console.log(true);
         const endX = Math.max(Math.abs(event.velocityX) * moveOutWidth, moveOutWidth);
         const toX = event.deltaX > 0 ? endX : -endX;
         const endY = Math.abs(event.velocityY) * moveOutWidth;

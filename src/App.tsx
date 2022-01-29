@@ -7,6 +7,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import ReactImageFallback from 'react-image-fallback';
 import BrokenImageIcon from '@mui/icons-material/BrokenImage';
 import CircularProgress from '@mui/material/CircularProgress';
+import ShowMoreText from 'react-show-more-text';
 import config from './card.config';
 
 let count = 0;
@@ -121,7 +122,17 @@ function App() {
               className="d-flex justify-content-center"
             />
             <h3>{currentCard.name}</h3>
-            <p>{text}</p>
+            <ShowMoreText
+              /* Default options */
+              lines={3}
+              more="Читать ещё"
+              less="Свернуть"
+              expanded={false}
+              width={280}
+              truncatedEndingComponent="... "
+            >
+              {text}
+            </ShowMoreText>
           </div>
           <div className="mt-4 tinder--buttons d-flex flex-row">
             <IconButton onClick={() => {

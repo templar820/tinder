@@ -9,6 +9,7 @@ import BrokenImageIcon from '@mui/icons-material/BrokenImage';
 import CircularProgress from '@mui/material/CircularProgress';
 import ShowMoreText from 'react-show-more-text';
 import config from './card.config';
+import * as process from "process";
 
 let count = 0;
 function App() {
@@ -18,14 +19,17 @@ function App() {
   const tinderContainer = useRef(null);
 
   useEffect(() => {
-    const endpoint = 'https://baconipsum.com/api/?type=all-meat&paras=1&start-with-lorem=1';
-
-    fetch(endpoint)
+    const endpoint = `http://localhost:${process?.env?.PORT || 8000}/get_text`;
+    fetch(endpoint, {
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    })
       .then((response) => {
         return response.json();
       })
       .then((data) => {
-        setText(data[0]);
+        setText(data.insult);
       })
       .catch((error) => {
         console.log('There was a problem with the fetch operation:' + error.message);

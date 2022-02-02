@@ -4,4 +4,4 @@ dist
 dist-ssr
 *.local
 .idea
-/package-lock.json
+package-lock.json

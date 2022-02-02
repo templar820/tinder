@@ -9,7 +9,6 @@ import BrokenImageIcon from '@mui/icons-material/BrokenImage';
 import CircularProgress from '@mui/material/CircularProgress';
 import ShowMoreText from 'react-show-more-text';
 import config from './card.config';
-import * as process from "process";
 
 let count = 0;
 function App() {
@@ -17,11 +16,10 @@ function App() {
   const [text, setText] = useState('');
   const cardRef = useRef(null);
   const tinderContainer = useRef(null);
-
   useEffect(() => {
-    const endpoint = `http://localhost:${process?.env?.PORT || 8000}/get_text`;
+    const endpoint = `http://localhost:${PORT}/get_text`;
     fetch(endpoint, {
-      headers:{
+      headers: {
         'Content-Type': 'application/json'
       }
     })

@@ -3,9 +3,14 @@ import react from '@vitejs/plugin-react';
 
 const port = process.env.PORT || 3000;
 
+console.log(port);
+
 export default defineConfig({
   server: {
     port,
   },
-  plugins: [react()]
+  plugins: [react()],
+  define: {
+    PORT: String(port),
+  }
 });

@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 
 const port = process.env.PORT || 3000;
 
-console.log(port);
+console.log(process.env, port);
 
 export default defineConfig({
   server: {

@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start": "nodemon index.js",
+    "start": "node prebuild.js && nodemon index.js",
     "build": "vite build",
     "test": "vite preview"
   },

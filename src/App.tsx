@@ -17,7 +17,7 @@ function App() {
   const cardRef = useRef(null);
   const tinderContainer = useRef(null);
   useEffect(() => {
-    const endpoint = `http://localhost:${PORT}/get_text`;
+    const endpoint = '/get_text';
     fetch(endpoint, {
       headers: {
         'Content-Type': 'application/json'

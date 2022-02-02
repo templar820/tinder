@@ -10,12 +10,14 @@
   }
 }
 
+
+*{
+  overflow: hidden;
+}
+
+
 body {
   background: #CCFBFE !important;
-  overflow: hidden;
-  *{
-    overflow: hidden;
-  }
   font-family: sans-serif;
 }
 

@@ -17,7 +17,7 @@ function App() {
   const cardRef = useRef(null);
   const tinderContainer = useRef(null);
   useEffect(() => {
-    const endpoint = '/get_text';
+    const endpoint = 'https://tinder-place.herokuapp.com/get_text';
     fetch(endpoint, {
       headers: {
         'Content-Type': 'application/json'
@@ -104,7 +104,7 @@ function App() {
 
   return (
     <div className="App">
-      <div className="tinder loaded p-5" ref={tinderContainer}>
+      <div className="tinder loaded" ref={tinderContainer}>
         <div className="tinder--status">
           <FavoriteIcon fontSize="large" style={{ color: '#FFACE4' }} />
           <ClearIcon fontSize="large" style={{ color: '#CDD6DD' }} />
